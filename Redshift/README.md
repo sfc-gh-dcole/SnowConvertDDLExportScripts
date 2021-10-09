@@ -1,7 +1,6 @@
-# Redshift Exporter
+# RedShift Export Scripts
 
-We’re excited to introduce Redshift Exporter, a simple tool to help exporting your Redshift Code
-so it can be migrated to Snowflake.
+This repository provides some simple scripts to help exporting your Redshift Code so it can be migrated to to [Snowflake](https://www.snowflake.com/) using [SnowConvert](https://www.mobilize.net/products/database-migrations/snowconvert).
 
 ## Version
 
@@ -14,7 +13,7 @@ View to get the DDL for a table.  This will contain the distkey, sortkey, constr
 Original Source: https://github.com/awslabs/amazon-redshift-utils/blob/master/src/AdminViews/v_generate_tbl_ddl.sql
 
          
-**Notes**:   
+## **Notes**:   
 * Default view ordering causes foreign keys to be created at the end.
 * This is needed due to dependencies of the foreign key constraint and the tables it links.  
 * Due to this one should not manually order the output if you are expecting to be able to replay the SQL directly from the VIEW query result. It is still possible to order if you filter out the FOREIGN KEYS and then apply them later.
@@ -60,4 +59,4 @@ If you encounter any bugs with the tool please file an issue in the
 
 ## License
 
-Redshift Exporter is licensed under the [MIT license](https://github.com/MobilizeNet/SnowConvertDDLExportScripts/blob/main/Redshift/LICENSE.txt).
+These export scripts are licensed under the [MIT license](https://github.com/MobilizeNet/SnowConvertDDLExportScripts/blob/main/Redshift/LICENSE.txt).

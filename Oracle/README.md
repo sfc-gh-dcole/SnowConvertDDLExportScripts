@@ -1,7 +1,7 @@
-﻿# Oracle Exporter
+﻿# Oracle DDL Export Scripts
 
-We’re excited to introduce Oracle Exporter, a simple tool to help exporting your Oracle Code
-so it can be migrated to Snowflake.
+This repository provides some simple scripts to help exporting your Oracle code
+so it can be migrated to [Snowflake](https://www.snowflake.com/) using [SnowConvert](https://www.mobilize.net/products/database-migrations/snowconvert)
 
 ## Version
 
@@ -11,92 +11,101 @@ Release 2021-05-10
 
 The following are the steps to execute the DDL Code Generation. They can be executed in Linux/Unix and Windows enviroments.
 
-**For Linux/Unix:**
+## **For Linux/Unix:**
 
 1 - Modify `createddls.sh` – Using a text editor modify the following parameters:
 
-* ORACLE_SID
-* CONNECT_STRING
-* SCRIPT_PATH
+* `ORACLE_SID`
+* `CONNECT_STRING`
+* `SCRIPT_PATH`
 
 Optionally modify these parameters (see comments in the file for explanation of parameters):
 
-* INCLUDE_OPERATOR
-* INCLUDE_CONDITION
-* EXCLUDE_OPERATOR
-* EXCLUDE_CONDITION
+* `INCLUDE_OPERATOR`
+* `INCLUDE_CONDITION`
+* `EXCLUDE_OPERATOR`
+* `EXCLUDE_CONDITION`
 
-It is recommended to use a user  with sysadmin privileges in the connection string and to run on a production-like environment with recently up to date statistics.
+It is recommended to use a user  with **sysadmin** privileges in the connection string and to run on a production-like environment with recently up to date statistics.
 
-By default the script is setup to exclude system related Oracle schemas and include all others.  You can modify the optional parameters above to get the desired scope, including the operator that is used.   Do not remove the parentheses around the entire statement which are needed for compound logic.  The NOT statement is already included in the code for the exclusion operator/condition.
+By default the script is setup to exclude system related Oracle schemas and include all others.  You can modify the optional parameters above to get the desired scope, including the operator that is used. 
+
+> Do not remove the parentheses around the entire statement which are needed for compound logic.  The **NOT** statement is already included in the code for the exclusion operator/condition.
 
 
 2 - After modifying, the `create_ddls.sh` file can be run from the command line to execute the extract.  The following files will be created in the directory `/object_extracts/DDL`:
 
-DDL Files - These files will contain the definitions of the objects specified by the file name.
+### DDL Files
+These files will contain the definitions of the objects specified by the file name.
 
-*	DDL_DBlink.sql
-*	DDL_Functions.sql
-*	DDL_Indexes.sql
-*	DDL_Packages.sql
-*	DDL_Procedures.sql
-*	DDL_Sequences.sql
-*	DDL_Synonyms.sql
-*	DDL_Tables.sql
-*	DDL_Triggers.sql
-*	DDL_Types.sql
-*	DDL_Views.sql
-*   DDL_QUEUE_TABLES.sql
-*   DDL_OLAP_CUBES.sql
-*   DDL_MATERIALIZED_VIEWS.sql
-*   DDL_QUEUES.sql
-*   DDL_ANALYTIC_VIEWS.sql
-*   DDL_OPERATORS.sql
+*	`DDL_DBlink.sql`
+*	`DDL_Functions.sql`
+*	`DDL_Indexes.sql`
+*	`DDL_Packages.sql`
+*	`DDL_Procedures.sql`
+*	`DDL_Sequences.sql`
+*	`DDL_Synonyms.sql`
+*	`DDL_Tables.sql`
+*	`DDL_Triggers.sql`
+*	`DDL_Types.sql`
+*	`DDL_Views.sql`
+*   `DDL_QUEUE_TABLES.sql`
+*   `DDL_OLAP_CUBES.sql`
+*   `DDL_MATERIALIZED_VIEWS.sql`
+*   `DDL_QUEUES.sql`
+*   `DDL_ANALYTIC_VIEWS.sql`
+*   `DDL_OPERATORS.sql`
 
 
-**For Windows:**
+## **For Windows:**
 
-**Should be executed on a windows server with sqlplus access to the Oracle environment.**
+> **Should be executed on a windows server with sqlplus access to the Oracle environment.**
 
 1 - Modify `create_ddls.bat` – Using a text editor modify the following parameters:
 
-* ORACLE_SID
-* CONNECT_STRING
-* SCRIPT_PATH
+* `ORACLE_SID`
+* `CONNECT_STRING`
+* `SCRIPT_PATH`
 
 Optionally modify these parameters (see comments in the file for explanation of parameters):
 
-* INCLUDE_OPERATOR
-* INCLUDE_CONDITION
-* EXCLUDE_OPERATOR
-* EXCLUDE_CONDITION
+* `INCLUDE_OPERATOR`
+* `INCLUDE_CONDITION`
+* `EXCLUDE_OPERATOR`
+* `EXCLUDE_CONDITION`
 
-It is recommended to use a user  with sysadmin privileges in the connection string and to run on a production-like environment with recently up to date statistics.
+It is recommended to use a user  with **sysadmin** privileges in the connection string and to run on a production-like environment with recently up to date statistics.
 
-By default the script is setup to exclude system related Oracle schemas and include all others.  You can modify the optional parameters above to get the desired scope, including the operator that is used.   Do not remove the parentheses around the entire statement which are needed for compound logic.  The NOT statement is already included in the code for the exclusion operator/condition.
+By default the script is setup to exclude system related Oracle schemas and include all others.  You can modify the optional parameters above to get the desired scope, including the operator that is used.   
+
+> Do not remove the parentheses around the entire statement which are needed for compound logic.  The **NOT** statement is already included in the code for the exclusion operator/condition.
 
 
 2 - After modifying, the `create_ddls.bat` file can be run from the command line to execute the extract.  The following files will be created in the directory `/object_extracts/DDL`:
 
-DDL Files - These files will contain the definitions of the objects specified by the file name.
+### DDL Files
 
-*	DDL_DBlink.sql
-*	DDL_Functions.sql
-*	DDL_Indexes.sql
-*	DDL_Packages.sql
-*	DDL_Procedures.sql
-*	DDL_Sequences.sql
-*	DDL_Synonyms.sql
-*	DDL_Tables.sql
-*	DDL_Triggers.sql
-*	DDL_Types.sql
-*	DDL_Views.sql
-*   DDL_QUEUE_TABLES.sql
-*   DDL_OLAP_CUBES.sql
-*   DDL_MATERIALIZED_VIEWS.sql
-*   DDL_QUEUES.sql
-*   DDL_ANALYTIC_VIEWS.sql
-*   DDL_OPERATORS.sql
+These files will contain the definitions of the objects specified by the file name.
+
+*	`DDL_DBlink.sql`
+*	`DDL_Functions.sql`
+*	`DDL_Indexes.sql`
+*	`DDL_Packages.sql`
+*	`DDL_Procedures.sql`
+*	`DDL_Sequences.sql`
+*	`DDL_Synonyms.sql`
+*	`DDL_Tables.sql`
+*	`DDL_Triggers.sql`
+*	`DDL_Types.sql`
+*	`DDL_Views.sql`
+*   `DDL_QUEUE_TABLES.sql`
+*   `DDL_OLAP_CUBES.sql`
+*   `DDL_MATERIALIZED_VIEWS.sql`
+*   `DDL_QUEUES.sql`
+*   `DDL_ANALYTIC_VIEWS.sql`
+*   `DDL_OPERATORS.sql`
+
+You can then zip the `/object_extracts/DDL` so it these files can then be processed with [SnowConvert](https://www.mobilize.net/products/database-migrations/snowconvert).
 
 ## Reporting issues and feedback
 
@@ -105,6 +114,4 @@ If you encounter any bugs with the tool please file an issue in the
 
 ## License
 
-Oracle Exporter is licensed under the [MIT license](https://github.com/MobilizeNet/SnowConvertDDLExportScripts/blob/main/Oracle/LICENSE.txt).
-
-
+These export scripts are licensed under the [MIT license](https://github.com/MobilizeNet/SnowConvertDDLExportScripts/blob/main/Oracle/LICENSE.txt).

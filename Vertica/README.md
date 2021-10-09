@@ -21,46 +21,45 @@ This repository has the following structure:
 
 ## 1 Vertica To Snowflake DDL Migration
 
-In the absence of a third party tool to perform migration of Vertica SQL to snowflake, this utility can be used by snowflake employees who are involved in such a project.
-
-    ●	Configuration
-    ●	Execution
+In the absence of a third party tool to perform migration of Vertica SQL to snowflake, this utility can be used.
 
 ### Configuration
 
 #### Python dependencies are:
 
-●	Vertica Python Connector
-●	Pandas
-●	sqlparse
+* Vertica Python Connector
+* Pandas
+* sqlparse
 
+To install do
 ```
-    To install do pip install -r requirements.txt
+ pip install -r requirements.txt
 ```
 
 #### Python scripts 
 
-The scripts can be located at ./Scripts Included with the scripts is a sample configuration file. The next section describes the config file.
+The scripts can be located at `./Scripts` folder.
+Included with the scripts is a sample configuration file. The next section describes the config file.
 
 ![Python Scripts](DocumentationImages/PythonScripts.png)
 
 
-The python scripts are :-
+The python scripts are:
 
-      ●	vertMain.py		This is the script that is called from the command line
-      ●	SFConfig.py		Class file for SF configuration
-      ●	VerticaConfig.py	Class file for Vertica configuration
-      ●	VerticaDBCalls.py	Class file containing Vertica DB methods
-      ●	SFConvert.py		Class file containing the DDL migration and Snowflake DB methods
+*	vertMain.py		    This is the script that is called from the command line
+*	SFConfig.py		    Class file for SF configuration
+*	VerticaConfig.py	Class file for Vertica configuration
+*	VerticaDBCalls.py	Class file containing Vertica DB methods
+*	SFConvert.py		Class file containing the DDL migration and Snowflake DB methods
 
-Sample configuration files:-
+Sample configuration files:
 
-      ●	sfConf.txt		Details on snowflake config
-      ●	verticaConf.txt		Details on vertica config.
+*	sfConf.txt		    Details on snowflake config
+*	verticaConf.txt		Details on vertica config.
 
 #### Vertica Config
 
-The following file is an example of the Vertica file.(Example: ./verticaConf.txt)
+The following file is an example of the Vertica file.(Example: `./verticaConf.txt`)
 
 ```
 [vertica]
@@ -74,7 +73,7 @@ schema=store
 
 #### Snowflake Config 
 
-The following is an example of the Snowflake file.(Example: ./sfConf.txt)
+The following is an example of the Snowflake file.(Example: `./sfConf.txt`)
 
 
 ```
@@ -110,15 +109,13 @@ processViews=True
 
 #### Create the TEMP\VerticaDDL folder.
 
-Create the folder ./TEMP/VerticaDDL in the project.
+Create the folder `./TEMP/VerticaDDL` in the project.
 
 ![TEMP\VerticaDDL](DocumentationImages/TempFolder.png)
 
 #### Update the file launch.json
 
-Update the file ./vscode/launch.json add the following code
-
-
+Is using VSCODE update the file `./vscode/launch.json` by adding the following code
 ```
         {
             "name": "Vertica main",
@@ -128,7 +125,7 @@ Update the file ./vscode/launch.json add the following code
             "console": "integratedTerminal",
             "justMyCode": false,
             "envFile": "${workspaceFolder}/.env",
-            "args": ["-s","/workspace/SnowConvertDDLExportScripts/sfConf.txt","-v","/workspace/SnowConvertDDLExportScripts/verticaConf.txt"]
+            "args": ["-s","./sfConf.txt","-v","./verticaConf.txt"]
         }
 ```
 
@@ -278,11 +275,3 @@ FROM store.MYTABLE_2
 ```
 
 ![TempFileCreated](DocumentationImages/TempFileCreated.png)
-  
-
-
-
-
-
-
-

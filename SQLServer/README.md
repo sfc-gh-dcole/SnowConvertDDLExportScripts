@@ -1,7 +1,6 @@
-# SQLServer Exporter
+# SQL Server Export Scripts
 
-We’re excited to introduce SQLServer Exporter, a simple tool to help exporting your SQLServer Code
-so it can be migrated to Snowflake.
+This repository provides some simple scripts to help exporting your SQLServer code so it can be migrated to [Snowflake](https://www.snowflake.com/) using [SnowConvert](https://www.mobilize.net/products/database-migrations/snowconvert)
 
 ## Version
 
@@ -59,4 +58,4 @@ If you encounter any bugs with the tool please file an issue in the
 
 ## License
 
-SQLServer Exporter is licensed under the [MIT license](https://github.com/MobilizeNet/SnowConvertDDLExportScripts/blob/main/SQLServer/LICENSE.txt).
+These scripts are licensed under the [MIT license](https://github.com/MobilizeNet/SnowConvertDDLExportScripts/blob/main/SQLServer/LICENSE.txt).
