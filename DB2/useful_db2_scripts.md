@@ -1,12 +1,14 @@
--------------------------------------------------------------------------
-Enclosed scripts and commands can be used for DB2 LUW v10.x and higher for DB2 Advanced Edition(partitioned databases).
-These are to be executed either by DBA team or a person having additional privileges to execute the same.
+# Usefule DB2 Scripts
+
 Version 0.1
 9-JUN-2021
 Author: Tushar Kale
 Email:  tushar.kale@snowflake.com
--------------------------------------------------------------------------
-Summary
+
+> Enclosed scripts and commands can be used for DB2 LUW v10.x and higher for DB2 Advanced Edition(partitioned databases).
+>These are to be executed either by DBA team or a person having additional privileges to execute the same.
+
+## Summary
 1. DB2 DATABASE DETAILS
 2. ALL TABLE DDLS
 3. GENERATE db2set COMMANDS FOR OPTIMIZER RELATED REGISTRY VARIABLES
@@ -26,42 +28,71 @@ Summary
 17.FETCH TABLE PARTITIONS (RANGE, HASH)
 
 
-1. DB2 DATABASE DETAILS
+## 1. DB2 DATABASE DETAILS
+
 a. The database manager configuration file
+
+```
 db2 get dbm cfg >> dbmcfg.txt
+```
+
 b. The database system directory
+```
 db2 get db cfg for <database_name> >> db_cfg.txt
 db2set -all > db2set.txt
+```
+
 c. The database node directory
+
+```
 db2 list node directory
-d. The node configuration file (db2nodes.cfg). Other files that contain debugging information, such as the exception or register dump or the call stack for the Db2Â®
+```
+
+d. The node configuration file (db2nodes.cfg). Other files that contain debugging information, such as the exception or register dump or the call stack for the Db2
 processes. https://www.ibm.com/docs/en/db2/11.1?topic=cli-getdbmcfgparamsc-how-get-database-manager-configuration-parameters
 db2nodes.cfg
-e. The database directory
-db2 list db directory >> dbdir.txt
 
-2. FETCH ALL TABLE DDLS
+e. The database directory
+```
+db2 list db directory >> dbdir.txt
+```
+
+## 2. FETCH ALL TABLE DDLS
+
 To extract the DDL for the tables in the database. For example, create a copy of PRODUCTION database called SNOWFLAKE such that all of the objects in the
 first database are created in the new SNOWFLAKE database. We add -l to get user-defined spaces, database partition groups(dpg) and buffer pools to be produced as well.
+
+```
 db2 create database SNOWFLAKE;
 db2look -d PRODUCTION -e -l > SNOWFLAKE.ddl;
+```
 
 COMPLETE DATABASE STRUCTURES
+```
 db2look -d PRODUCTION -e -l >> SNOWFLAKE.ddl;
+```
 
 EXTRACT TABLE DDLS FOR AN IDENTIFIED SCHEMA e.g., SCHEMA1
+```
 db2look -d PRODUCTION -e -z db2 > SCHEMA1.ddl;
+```
 
 GENERATE DDL FOR A SPECIFIC TABLE
+```
 db2look -d PRODUCTION -t SCHEMA.TABLE_NAME -e > TABLE_NAME.ddl;
+```
 
 GENERATE DDL GRANT AUTHORIZATION
+```
 db2look -d PRODUCTION -e -x db2 > GRANT.ddl;
+```
 
 GENERATE WLM SPECIFIC DDL
+```
 db2look -d PRODUCTION -e -wlm db2 > WLM.ddl;
+```
 
-3. GENERATE db2set COMMANDS FOR OPTIMIZER RELATED REGISTRY VARIABLES e.g., PRODUCTION database
+## 3. GENERATE db2set COMMANDS FOR OPTIMIZER RELATED REGISTRY VARIABLES e.g., PRODUCTION database
 * The DDL statements for all database objects
 * The UPDATE statements to replicate the statistics on all tables and indexes
 * The GRANT authorization statements
@@ -69,9 +100,12 @@ db2look -d PRODUCTION -e -wlm db2 > WLM.ddl;
 * The db2set commands for optimizer-related registry variables
 * The DDL statements for all user-defined database partition groups, buffer pools, and table spaces
 * The output is sent to the db2look.sql file.
+```
 db2look -d PRODUCTION -a -e -m -l -x -f -o SNOWFLAKE_db2look.sql;
+```
 
-4. GENERATE TABLE VOLUMETRICS
+## 4. GENERATE TABLE VOLUMETRICS
+```sql
 SELECT SUBSTR(TABSCHEMA,1,10) AS SCHEMA,  
 SUBSTR(TABNAME,1,15) AS TABNAME,
 INT(DATA_OBJECT_P_SIZE) AS OBJ_SZ_KB,
@@ -88,11 +122,15 @@ SUM(XML_OBJECT_P_SIZE) AS XML_SZ_KB
 FROM    SYSIBMADM.ADMINTABINFO
 GROUP BY TABSCHEMA
 ORDER BY 2 DESC;
+```
 
-DATABASE SIZE
+### DATABASE SIZE
+```
 db2 "CALL GET_DBSIZE_INFO(,,,-1)";
+```
 
-SCHEMA SIZE
+### SCHEMA SIZE
+```
 SELECT SUBSTR(TABSCHEMA,1,30) AS TBSCHEMA,
 SUM(DATA_OBJECT_P_SIZE) DATA_P,
 SUM(INDEX_OBJECT_P_SIZE) as INDEX_P
@@ -106,10 +144,12 @@ SUM(DATA_OBJECT_P_SIZE) DATA_P,
 SUM(INDEX_OBJECT_P_SIZE) as INDEX_P  
 FROM TABLE( SYSPROC.ADMIN_GET_TAB_INFO('<SCHEMA>','<TABLE_NAME>')) AS T
 GROUP BY TABSCHEMA,TABNAME  with ur;
+```
 
-5. DATABASE TABLE COLUMNS
-Execute query on SYSCAT.COLUMNS
+## 5. DATABASE TABLE COLUMNS
 
+Execute query on `SYSCAT.COLUMNS`
+```sql
 SELECT C.TABSCHEMA AS SCHEMA_NAME,
        C.TABNAME AS TABLE_NAME,
        C.COLNAME AS COLUMN_NAME,
@@ -130,8 +170,10 @@ AND T.TABNAME = C.TABNAME
 WHERE T.TYPE = 'T'
 ORDER BY SCHEMA_NAME,
     TABLE_NAME FETCH FIRST 10 ROWS ONLY;
+```
 
-6. FETCH TABLE CONSTRAINTS - PRIMARY KEYS, FOREIGN KEYS, UNIQUE KEYS
+## 6. FETCH TABLE CONSTRAINTS - PRIMARY KEYS, FOREIGN KEYS, UNIQUE KEYS
+```sql
 with temp as (SELECT
     T.TABSCHEMA AS TABLE_SCHEMA
     ,T.TABNAME   AS TABLE_NAME
@@ -168,7 +210,9 @@ ORDER BY T.TABSCHEMA
     ,U.COLSEQ);
 
 SELECT * FROM TEMP WHERE  TABLE_SCHEMA='SCHEMA1';
+```
 
+```
 DB2 -X "SELECT TABSCHEMA,
 TABNAME,
 COLNAMES,
@@ -179,8 +223,10 @@ FROM SYSCAT.INDEXES
 WHERE TABSCHEMA='SCHEMA1'
 AND  TABNAME='TABLE1'
 ORDER BY IID WITH UR" | AWK '{PRINT $1 "#"$2"#"$3"#"$4"#"$5"#"$6}';
+```
 
-FETCH ONLY PRIMARY KEY
+### FETCH ONLY PRIMARY KEY
+```sql
 SELECT TAB.TABSCHEMA AS SCHEMA_NAME,
     CONST.CONSTNAME AS PK_NAME,
 KEY.COLSEQ AS POSITION,
@@ -199,15 +245,22 @@ WHERE TAB.TYPE = 'T'
 AND TAB.TABSCHEMA='<SCHEMA>'
 AND TAB.TABNAME='<TABLE_NAME>'
 ORDER BY TAB.TABSCHEMA, CONST.CONSTNAME, KEY.COLSEQ;
+```
+### FETCH UNIQUE CONSTRAINTS: 
+Information is available in SYSCAT.INDEXES
 
-FETCH UNIQUE CONSTRAINTS: Information is available in SYSCAT.INDEXES
-FETCH FOREIGN KEYS: Information is available in SYSCAT.REFERENCES
+### FETCH FOREIGN KEYS: Information is available in SYSCAT.REFERENCES
+```
 DB2 DESCRIBE TABLE SYSCAT.REFERENCES;
+```
 
-7. FETCH ALL DB2 FUNCTIONS
+## 7. FETCH ALL DB2 FUNCTIONS
+```
 DB2LOOK -D <DBNAME> -E -COR >> FUNCTIONS.TXT;
+```
 
-8. FETCH ALL DB2 PROCEDURES
+## 8. FETCH ALL DB2 PROCEDURES
+```sql
 SELECT ROUTINESCHEMA AS SCHEMA_NAME,
        ROUTINENAME AS PROCEDURE_NAME,
        CASE ORIGIN
@@ -224,8 +277,10 @@ WHERE ROUTINETYPE = 'P'
     AND ROUTINESCHEMA NOT LIKE 'SYS%'
 ORDER BY SCHEMA_NAME,
          PROCEDURE_NAME;
+```
 
-9. FETCH TABLE DISTRIBUTIONS KEY
+## 9. FETCH TABLE DISTRIBUTIONS KEY
+```sql
 SELECT TABSCHEMA,
 TABNAME,
 COLNAME,
@@ -235,8 +290,10 @@ WHERE TABNAME = '<TABLE_NAME>'
 AND TABSCHEMA='<TABLE_SCHEMA>'
 AND PARTKEYSEQ !=0
 ORDER BY PARTKEYSEQ;
+```
 
-10. FETCH TABLESPACE SIZES
+## 10. FETCH TABLESPACE SIZES
+```sql
 SELECT SUBSTR(TBSP_NAME,1,20) AS "TABLESPACE NAME",
 TBSP_TYPE AS "TYPE",
 SUBSTR(TBSP_STATE,1,20) AS "STATE",
@@ -252,8 +309,10 @@ SUM(TBSP_FREE_SIZE_KB)/1024/1024 AS TBSP_FREE_SIZE_GB,
 SUM(TBSP_TOTAL_SIZE_KB)/1024/1024 - SUM(TBSP_USED_SIZE_KB)/1024/1024 AS DIFFERENCE
 FROM SYSIBMADM.TBSP_UTILIZATION
 GROUP BY TBSP_NAME;
+```
 
-11. FETCH COLUMN DATA TYPES
+## 11. FETCH COLUMN DATA TYPES
+```sql
 SELECT TABSCHEMA,
 TABNAME,
 COLNAME,
@@ -266,8 +325,10 @@ FROM SYSCAT.COLUMNS
 WHERE TABSCHEMA='<TABLE_SCHEMA>'
 AND TABNAME='<TABLE_NAME>'
 WITH UR;
+```
 
-12. FETCH ALL TABLES UNDER TABLESPACES FOR DISTRIBUTED TABLES
+## 12. FETCH ALL TABLES UNDER TABLESPACES FOR DISTRIBUTED TABLES
+```
 SELECT DISTINCT D.TABSCHEMA,
 D.TABNAME,
 T.TBSPACE
@@ -276,8 +337,10 @@ SYSCAT.TABLESPACES T
 WHERE D.TBSPACEID IN (25)
 AND D.TBSPACEID = T.TBSPACEID
 ORDER BY 3 WITH UR;
+```
 
-13. CHECK TABLESPACE STATE IN ALL PARTITIONS
+## 13. CHECK TABLESPACE STATE IN ALL PARTITIONS
+```sql
 SELECT SUBSTR(TBSP_NAME,1,30) AS TBSP_NAME,
 DBPARTITIONNUM,
 TBSP_TYPE,
@@ -288,27 +351,35 @@ WHERE TBSP_NAME = '<TBSP_NAME>'
 AND  TBSP_STATE
 NOT IN 'NORMAL'
 ORDER BY DBPARTITIONNUM ASC;
+```
 
-14. TRANSACTION LOG UTILIZATION
+## 14. TRANSACTION LOG UTILIZATION
+```
 SELECT DBPARTITIONNUM,
 LOG_UTILIZATION_PERCENT
 FROM SYSIBMADM.LOG_UTILIZATION
 ORDER BY DBPARTITIONNUM WITH UR;
+```
 
-15. APPLICATION HOLDING OLDEST TRANSACTION
+## 15. APPLICATION HOLDING OLDEST TRANSACTION
+
+```sql
 SELECT MEMBER,
 CUR_COMMIT_DISK_LOG_READS,
 CURRENT_ACTIVE_LOG,
 APPLID_HOLDING_OLDEST_XACT
 FROM TABLE(MON_GET_TRANSACTION_LOG(-2)) AS T
 ORDER BY MEMBER ASC;
+```
 
-16. FETCH TABLE DISTRIBUTIONS
+## 16. FETCH TABLE DISTRIBUTIONS
+```sql
 SELECT DBPARTITIONNUM(HASK_KEY_VARIABLE),
 COUNT(*)
 FROM TABLE_NAME
 GROUP BY DBPARTITIONNUM(HASH_KEY_VARIABLE)
 ORDER BY DBPARTITIONNUM(HASH_KEY_VARIABLE) WITH UR;
+```
 
-17. FETCH TABLE PARTITIONS (RANGE, HASH)
-Information is available in SYSCAT.DATAPARTITIONS
+## 17. FETCH TABLE PARTITIONS (RANGE, HASH)
+Information is available in `SYSCAT.DATAPARTITIONS`

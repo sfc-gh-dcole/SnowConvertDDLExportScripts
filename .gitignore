@@ -344,3 +344,5 @@ snowsql_rt.log_bootstrap
 
 opt/
 bfg.jar
+
+DB2/database/
