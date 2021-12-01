@@ -20,7 +20,7 @@ Using a text editor modify the following parameters:
 
 That variable will determine if there are any database that you want to exclude from the extraction
 
-It is recommended to use a user  with administrative privileges and to run on a production-like environment with recently up to date statistics.
+**It is required to use a user  with administrative privileges (DBA)** and to run on a production-like environment with recently up to date statistics.
 
 
 2 - After modifying, the `create_ddls.sh` file can be run from the command line to execute the extract.  The following files will be created in the directory `/object_extracts/DDL`:
