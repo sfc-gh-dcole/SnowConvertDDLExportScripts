@@ -13,7 +13,7 @@ The following are the steps to execute the DDL Code Generation. They can be exec
 
 ## **For Linux/Unix:**
 
-1 - Modify `createddls.sh` 
+1 - Modify `create_ddls.sh` located in the `bin` folder. 
 Using a text editor modify the following parameters:
 
     * `DATABASES_TO_EXCLUDE`
@@ -26,15 +26,15 @@ That variable will determine if there are any database that you want to exclude 
 2 - After modifying, the `create_ddls.sh` file can be run from the command line to execute the extract.  The following files will be created in the directory `/object_extracts/DDL`:
 
 ### DDL Files
-For each database a folder with the database name and a file called DDL_All.sql will be generated. It will contain the definitions of the objects in the database.
+For each database a folder with the database name and a file called `DDL_All.sql` will be generated. It will contain the definitions of the objects in the database.
 
 ### Reports
 
 For each database some volumetrics reports will be created:
 
-- volumetrics_per_object.txt 
-- volumetrics_per_database.txt
-- db_size.txt
+- `volumetrics_per_object.txt` 
+- `volumetrics_per_database.txt`
+- `db_size.txt`
 
 ## Reporting issues and feedback
 
