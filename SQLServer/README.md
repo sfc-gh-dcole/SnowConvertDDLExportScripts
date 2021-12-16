@@ -45,13 +45,13 @@ PS> .\extract-sql-server-ddl.ps1
 Example 2: connect to the instance listening on port 1500 on server foo.mydomain.com
 
 ```ps
-PS> .\extract-sql-server-ddl.ps1 -ServiceInstance foo.mydomain.com -Port 1500
+PS> .\extract-sql-server-ddl.ps1 -ServerInstance foo.mydomain.com -Port 1500
 ```
 
 Example 3: connect as juser using SQL Authentication to the default instance on foo.database.windows.net
 
 ```ps
-PS> .\extract-sql-server-ddl.ps1 -UserName juser -ServiceInstance foo.database.windows.net 
+PS> .\extract-sql-server-ddl.ps1 -UserName juser -ServerInstance foo.database.windows.net 
 ```
 
 ## Reporting issues and feedback
