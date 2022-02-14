@@ -92,3 +92,13 @@
 # - version 1.9
 # - added more robust handling of encrypted objects and tracking of same in object_inventory.csv
 # - minor cleanup
+#
+# 2022-02-10 Derrick Cole
+# - version 2.0
+# - added interactive prompts with default values for parameters not specified on the command line
+# - separated ServerInstance parameter into separate ServerName and InstanceName parameters
+# - added more robust handling of server names and instance names
+# - relocated default script directory to directory containing script
+# - removed UseTcp parameter
+# - minor cleanup
+#
