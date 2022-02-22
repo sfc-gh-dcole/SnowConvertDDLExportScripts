@@ -102,3 +102,7 @@
 # - removed UseTcp parameter
 # - minor cleanup
 #
+# 2022-02-22 Derrick Cole
+# - version 2.1
+# - added support for instance-level linked server scripting
+#

@@ -1,5 +1,5 @@
 ﻿#
-# version 2.0 Derrick Cole, Snowflake Computing
+# version 2.1 Derrick Cole, Snowflake Computing
 #
 # see co-located Revision-History.txt for additional information
 #
@@ -433,6 +433,60 @@ if ($server.Databases.Count -gt 0) {
     Exit 1
 }
 
+function Get-ServerObjectDdl {
+    param(
+        [object[]]$objects,
+        [string]$type
+    )
+
+    try {
+        if ($objects.Count -eq 0) { throw "No objects of type '$($type)' found in instance '$($ServerInstance)'" }
+
+        # start with fresh extraction of this database object type
+        $urnCollection = New-Object Microsoft.SqlServer.Management.Smo.UrnCollection
+        $scripterFile = "$($instanceDirectory)\DDL_$($type).sql"
+        Remove-Item -Path $scripterFile -ErrorAction Ignore
+        $scripter.Options.Filename = $scripterFile
+
+        $objectsProcessed = 0
+        $objectsErrored = 0
+        foreach ($object in $objects) {
+            try {
+                # save object summary
+                [PSCustomObject]@{
+                    "Script Version" = $version
+                    "Run Date" = $startTime
+                    "Server" = $serverName
+                    "Instance" = $instanceName
+                    "Database" = $null
+                    "Schema" = $null
+                    "Name" = $object.Name
+                    "Type" = $type
+                    "Encrypted" = $false
+                    "DDL File" = $scripterFile
+                } | Export-Csv -Path "$($ScriptDirectory)\object_inventory.csv" -NoTypeInformation -Append
+
+                $urnCollection.add($object.urn)
+                $objectsProcessed += 1
+            }
+            catch {
+                $objectsErrored += 1
+                Write-Warning $_
+            }
+        }
+        if ($objectsProcessed -gt 0) {
+            $scripter.script($urnCollection)
+        }
+        Write-Host "Retrieved $($objectsProcessed) of $($objects.Count) object(s) of type '$($type)' ($($objectsErrored) errors) from instance '$($ServerInstance)'"
+        $global:totalObjectsProcessed += $objectsProcessed
+        $global:totalObjectsErrored += $objectsErrored
+        $global:totalObjectsToProcess += $objects.Count
+    }
+    catch {
+        Write-Warning $_
+    }
+}
+
 function Get-DatabaseObjectDdl {
     param(
         [object[]]$objects,
@@ -527,14 +581,19 @@ function Get-DatabaseObjectDdl {
     }
 }
 
-# iterate over databases
-$databasesProcessed = 0
+# set total counters
 $global:totalObjectsProcessed = 0
 $global:totalObjectsEncrypted = 0
 $global:totalObjectsErrored = 0
 $global:totalObjectsToProcess = 0
 $global:totalTablesProcessed = 0
 $global:totalTablesToProcess = 0
+
+# get server\instance-level objects
+Get-ServerObjectDdl -objects $server.LinkedServers -type LinkedServer
+
+# get database-level objects
+$databasesProcessed = 0
 foreach ($database in $databases) {
     try {
 
