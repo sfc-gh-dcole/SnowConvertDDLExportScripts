@@ -4,8 +4,8 @@ This repository provides some simple scripts to help exporting your SQLServer co
 
 ## Version
 
-Version 2.0
-Release 2022-02-10
+Version 2.1
+Release 2022-02-22
 
 ## Usage
 
