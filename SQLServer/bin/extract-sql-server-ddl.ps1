@@ -1,5 +1,7 @@
-﻿#
+#
+
 # version 2.1 Derrick Cole, Snowflake Computing
+
 #
 # see co-located Revision-History.txt for additional information
 #
@@ -67,10 +69,11 @@
     .LINK
     For more information on PowerShell match syntax, please visit: https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_regular_expressions
 
-#>
+
 
 [CmdletBinding(PositionalBinding=$false)]
 param(
+
     [string]$ServerName,
     [string]$InstanceName,
     [string]$PortNumber,
@@ -82,6 +85,7 @@ param(
     [string[]]$IncludeSchemas,
     [string[]]$ExcludeSchemas,
     [switch]$IncludeSystemDatabases,
+
     [ValidateSet('delete', 'keep')][string]$ExistingDirectoryAction,
     [ValidateSet('continue', 'stop')][string]$NoSysAdminAction
 )
@@ -90,9 +94,11 @@ param(
 set-psdebug -strict
 $ErrorActionPreference = 'stop'
 $version = 'v2.0'
+
 $hostName = $env:COMPUTERNAME
 $startTime = Get-Date
 Write-Host "[ $($MyInvocation.MyCommand.Name) version $($version) on $($hostName), start time $($startTime) ]"
+
 
 function Get-Response {
     param(
@@ -177,10 +183,12 @@ function Confirm-DirectoryExists {
             }
             catch {
                 Write-Warning "Error deleting directory '$($directory)': $_"
+
                 Exit 1
             }
         }
     }
+
     if (!(Test-Path -Path $directory -PathType Container)) {
         try {
             $null = New-Item -Path $directory -ItemType Directory -Force
@@ -188,10 +196,12 @@ function Confirm-DirectoryExists {
         }
         catch {
             Write-Warning "Error creating directory '$($directory)': $_"
+
             Exit 1
         }
     }
 }
+
 
 # check powershell version
 $minimumPowerShellVersionNumber = 5
@@ -314,10 +324,12 @@ try {
     }
     $connectionString = ($connectionString.GetEnumerator() | Foreach-Object { "$($_.Key)=$($_.Value)" }) -Join ";"
 
+
     $sqlConnection = New-Object System.Data.SqlClient.SqlConnection $connectionString
     $serverConnection = New-Object Microsoft.SqlServer.Management.Common.ServerConnection $sqlConnection
     $server = New-Object Microsoft.SqlServer.Management.Smo.Server $serverConnection
     switch($null -ne $server.Version) {
+
         $true {
             try {
                 $sqlCommand = New-Object System.Data.SqlClient.SqlCommand
@@ -382,12 +394,14 @@ end
             }
         }
         $false { throw "Not connected to '$($ServerName)'" }
+
     }
 }
 catch {
     Write-Warning $_
     Exit 1
 }
+
 
 # initialize scripter
 try {
@@ -407,8 +421,10 @@ catch {
 }
 
 # set up initial directories
+
 Confirm-DirectoryExists -directory $ScriptDirectory
 Confirm-DirectoryExists -directory ($instanceDirectory = "$($ScriptDirectory)\$($ServerInstance)")
+
 
 # save server summary
 [PSCustomObject]@{
@@ -434,6 +450,7 @@ if ($server.Databases.Count -gt 0) {
     Write-Warning "No databases found on '$($ServerInstance)'."
     Exit 1
 }
+
 
 function Get-ServerObjectDdl {
     param(
@@ -488,6 +505,7 @@ function Get-ServerObjectDdl {
         Write-Warning $_
     }
 }
+
 
 function Get-DatabaseObjectDdl {
     param(
@@ -583,7 +601,9 @@ function Get-DatabaseObjectDdl {
     }
 }
 
+
 # set total counters
+
 $global:totalObjectsProcessed = 0
 $global:totalObjectsEncrypted = 0
 $global:totalObjectsErrored = 0
@@ -591,16 +611,20 @@ $global:totalObjectsToProcess = 0
 $global:totalTablesProcessed = 0
 $global:totalTablesToProcess = 0
 
+
 # get server\instance-level objects
 Get-ServerObjectDdl -objects $server.LinkedServers -type LinkedServer
 
 # get database-level objects
 $databasesProcessed = 0
+
 foreach ($database in $databases) {
     try {
 
         # set up this database directory
+
         Confirm-DirectoryExists -directory ($databaseDirectory = "$($instanceDirectory)\$($database.Name)")
+
 
         # save this database summary
         [PSCustomObject]@{
@@ -646,4 +670,6 @@ Write-Host "[ $($MyInvocation.MyCommand.Name) processed $($databasesProcessed) o
 Write-Host "[ $($global:totalObjectsProcessed) of $($global:totalObjectsToProcess) total database objects retrieved ($($global:totalObjectsEncrypted) encrypted, $($global:totalObjectsErrored) errors) ]"
 Write-Host "[ $($global:totalTablesProcessed) of $($global:totalTablesToProcess) total tables retrieved ]"
 
+
 exit 0
+

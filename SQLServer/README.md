@@ -7,6 +7,7 @@ This repository provides some simple scripts to help exporting your SQLServer co
 Version 2.1
 Release 2022-02-22
 
+
 ## Usage
 
 The `extract-sql-server-ddl.ps1` script attempts to connect to an instance of SQL Server and, for each database/schema that survives inclusion/exclusion filters, retrieves object Data Definition Language (DDL) to files in a specified directory.
@@ -40,6 +41,7 @@ The following parameters are NOT prompted for during script execution but can be
 
 Example 1: invoke the script, enter (default) values for all prompted parameters, respond if the authenticated user is not a member of the 'sysadmin' group, and respond if existing directores in **ScriptDirectory** are encountered
 
+
 ```ps
 PS> .\extract-sql-server-ddl.ps1
 ```
@@ -61,6 +63,7 @@ PS> .\extract-sql-server-ddl.ps1 -NoSysAdminAction stop
 For more information on the Microsoft SqlServer SMO assemblies used by this script, please visit: https://docs.microsoft.com/en-us/sql/relational-databases/server-management-objects-smo/installing-smo.
 
 For more information on PowerShell match syntax, please visit: https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_regular_expressions.
+
 
 ## Reporting issues and feedback
 
