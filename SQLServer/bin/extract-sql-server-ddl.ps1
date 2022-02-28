@@ -326,17 +326,19 @@ try {
 
                 # get actual server name and instance name
                 try {
-                    $sqlCommand.CommandText = "select @@SERVERNAME, @@SERVICENAME"
+                    $sqlCommand.CommandText = @'
+declare
+	@e varchar(128) = cast(serverproperty('edition') as varchar(128));
+begin
+	select
+		case when lower(@e) like '%azure%' then serverproperty('servername') else serverproperty('machinename') end servername,
+		case when lower(@e) like '%azure%' then replace(@e, ' ', '_') else isnull(serverproperty('instancename'), 'MSSQLSERVER') end instancename;
+end
+'@
                     $result = $sqlCommand.ExecuteReader()
                     if ($result.Read()) {
-                        if ('' -ne $result.GetValue(0)) { $ServerName = $result.GetValue(0) }
-                        if ('' -ne $result.GetValue(1)) {
-                            $InstanceName = $result.GetValue(1)
-                        } elseif ('' -ne $PortNumber) {
-                            $InstanceName = "Port_$($PortNumber)_Instance"
-                        } elseif ('' -eq $InstanceName) {
-                            $InstanceName = "MSSQLSERVER"
-                        }
+                        $ServerName = $result.GetValue(0)
+                        $InstanceName = $result.GetValue(1)
                     } else {
                         throw "'$($sqlCommand.CommandText)' returned no data, retaining supplied server/instance names."
                     }
