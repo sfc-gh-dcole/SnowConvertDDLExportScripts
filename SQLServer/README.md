@@ -4,8 +4,9 @@ This repository provides some simple scripts to help exporting your SQLServer co
 
 ## Version
 
-Version 1.7
-Release 2021-12-10
+Version 2.1
+Release 2022-02-22
+
 
 ## Usage
 
@@ -13,46 +14,56 @@ The `extract-sql-server-ddl.ps1` script attempts to connect to an instance of SQ
 
 **SQL Server tested versions**: `SQL Server 2019`, `Azure SQLDatabase`
 
-The script use the following parameters:
+The following parameters are prompted for during script execution if not specified on the command line:
 
-* **ServerInstance**: Specifies the instance to use.  Format is [[\<server>]\[\<named_instance>]] (i.e., \\\<named_instance>, \<server>, \<server>\\\<named_instance>, or not specified).  If not specified, use the default instance on the local server.
-* **Port**: Specifies the port to use when connecting to <server>.  Overrides a <named_instance> if specified in -ServerInstance and forces -UseTcp.  Default is none.
-* **UseTcp**: Specify whether to use the TCP format when connecting to -ServerInstance. Default is to not use TCP format.
-* **UserName**: Specifies the user name to use with SQL Authentication.  If not specified, use the current user with Windows Authentication.
-* **Password**: Specifies the password associated with -UserName (otherwise prompted interactively if -UserName is specified).
-* **ScriptDirectory**: Specifies the root directory under which server-, instance-, database-, and object-related files are stored.  Default is 'C:\MyScriptsDirectory'.
-* **IncludeDatabases**: Specifies which database(s) to include via a comma-delimited list of patterns (using PowerShell -match syntax).  Default is to include all databases other than SQL Server system databases.
-* **ExcludeDatabases**: Specifies which database(s) to exclude via a comma-delimited list of patterns (using PowerShell -match syntax).  Default is to exclude none.
-* **IncludeSchemas**: Specifies which schema(s) to include via a comma-delimited list of patterns (using PowerShell -match syntax).  Default is to include all.
-* **ExcludeSchemas**: Specifies which schema(s) to exclude via a comma-delimited list of patterns (using PowerShell -match syntax).  Default is to exclude none.
-* **IncludeSystemDatabases**: Specify whether to include SQL Server system databases prior to applying inclusion/exclusion filters.  Default is false.
-* **ExistingDirectoryAction**: Specify whether to (non-interactively) 'delete' or 'keep' existing directories where encountered.  Default is to prompt interactively.
-* **NoSysAdminAction**: Specify whether to (non-interactively) 'stop' or 'continue' when the -UserName does not have the sysadmin role on -ServerInstance.  Default is to prompt interactively.
+* **ServerName**: The server to connect to.  Default is to connect to the server executing the script (i.e., localhost).
+* **InstanceName**: The named instance to use on **ServerName**.  Default is to use the default instance on **ServerName** (i.e., MSSQLSERVER).
+* **PortNumber**: The port number to use on **ServerName**.  Overrides **InstanceName** if **InstanceName** is also specified.  Default is to not use a port number.
+* **UserName**: The user name to use with SQL Authentication.  Default is to use the currently-logged-in user with Windows Authentication.
+* **Password**: The password associated with **UserName** to use with SQL Authentication.  Default is to use the currently-logged-in user with Windows Authentication.
+* **ScriptDirectory**: The top-level directory under which server-, instance-, database-, and object-related files are stored.  Default is '.\ScriptDirectory'.
+* **IncludeDatabases**: Which database(s) to include via a comma-delimited list of patterns (using PowerShell -match syntax).  Default is to include all (other than SQL Server system databases; see **IncludeSystemDatabases**).
+* **ExcludeDatabases**: Which database(s) to exclude via a comma-delimited list of patterns (using PowerShell -match syntax).  Default is to exclude none.
+* **IncludeSchemas**: Which schema(s) to include via a comma-delimited list of patterns (using PowerShell -match syntax).  Default is to include all.
+* **ExcludeSchemas**: Which schema(s) to exclude via a comma-delimited list of patterns (using PowerShell -match syntax).  Default is to exclude none.
+* **IncludeSystemDatabases**: Specify whether to include SQL Server system databases when applying **IncludeDatabases** and **ExcludeDatabases** filters.  Default is to exclude SQL Server system databases.
 
+The following parameters are NOT prompted for during script execution but can be optionally specified on the command line:
+
+* **ExistingDirectoryAction**: Specify whether to automatically 'delete' or 'keep' existing directories in **ScriptDirectory**.  Default is to interactively prompt whether to 'delete' or 'keep' each existing directory encountered.
+* **NoSysAdminAction**: Specify whether to automatically 'stop' or 'continue' execution should the authenticated user not be a member of the 'sysadmin' group on **InstanceName** or if role membership cannot be determined.  Default is to interactively prompt whether to 'stop' or 'continue' execution.
 
 **INPUTS**: None.  You cannot pipe objects to extract-sql-server-ddl.ps1.
 
 **OUTPUTS**: System.String.
 
-## Here some examples of how use the script:
+## Here some examples of how to use the script:
 
-Example 1: connect to the default instance on the local server using Windows Authentication
+Example 1: invoke the script, enter (default) values for all prompted parameters, respond if the authenticated user is not a member of the 'sysadmin' group, and respond if existing directores in **ScriptDirectory** are encountered
+
 
 ```ps
 PS> .\extract-sql-server-ddl.ps1
 ```
 
-Example 2: connect to the instance listening on port 1500 on server foo.mydomain.com
+Example 2: invoke the script, enter (default) values for remaining prompted parameters (including **Password**), connect as juser using SQL Authentication to the named instance bar on foo.database.windows.net, respond if the authenticated user is not a member of the 'sysadmin' group, and automatically delete existing directores in **ScriptDirectory** when encountered
 
 ```ps
-PS> .\extract-sql-server-ddl.ps1 -ServerInstance foo.mydomain.com -Port 1500
+PS> .\extract-sql-server-ddl.ps1 -UserName juser -ServerName foo.database.windows.net -InstanceName bar -ExistingDirectoryAction delete
 ```
 
-Example 3: connect as juser using SQL Authentication to the default instance on foo.database.windows.net
+Example 3: invoke the script, enter (default) values for all prompted parameters, automatically stop if the authenticated user isn't a member of the 'sysadmin' group, and respond if existing directores in **ScriptDirectory** are encountered
 
 ```ps
-PS> .\extract-sql-server-ddl.ps1 -UserName juser -ServerInstance foo.database.windows.net 
+PS> .\extract-sql-server-ddl.ps1 -NoSysAdminAction stop
 ```
+
+## For More Information
+
+For more information on the Microsoft SqlServer SMO assemblies used by this script, please visit: https://docs.microsoft.com/en-us/sql/relational-databases/server-management-objects-smo/installing-smo.
+
+For more information on PowerShell match syntax, please visit: https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_regular_expressions.
+
 
 ## Reporting issues and feedback
 
