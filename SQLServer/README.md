@@ -1,11 +1,11 @@
 # SQL Server Export Scripts
 
-This repository provides some simple scripts to help exporting your SQLServer code so it can be migrated to [Snowflake](https://www.snowflake.com/) using [SnowConvert](https://www.mobilize.net/products/database-migrations/snowconvert)
+This repository provides some simple scripts to help exporting your SQLServer code so it can be migrated to [Snowflake](https://www.snowflake.com/) using [SnowConvert](https://www.mobilize.net/products/database-migrations/snowconvert).
 
 ## Version
 
-Version 1.1 
-Release 2021-09-07
+Version 2.5
+Release 2022-07-08
 
 ## Usage
 
@@ -13,43 +13,28 @@ The `extract-sql-server-ddl.ps1` script attempts to connect to an instance of SQ
 
 **SQL Server tested versions**: `SQL Server 2019`, `Azure SQLDatabase`
 
-The script use the following parameters:
+The script uses the following parameters.  The script will prompt the user for any parameter not specified on the command line.
 
-* **ServerName**: Specifies the SQL Server instance to use
-* **Port**: Specifies the port to use (default is 1433)
-* **SqlAuthentication**: Bypass "normal" Windows Authentication when attempting to connect (default is false)
-* **UserId**: Specifies the user name to use when attempting to connect (used in conjunction with -SqlAuthentication)
-* **Password**: Specifies the password associated with the UserId to use when attempting to connect (used in conjunction with -SqlAuthentication)
-* **IncludeSystemObjects**: Specify whether to include databases, schemas, and tables tagged as SQL Server system objects (default is false)
+* **ServerName**: Specifies the SQL Server database server to use
+* **InstanceName**: Specifies the SQL Server database instance to use (default is the default instance)
+* **PortNumber**: Specifies the port to use (default is 1433)
+* **UserName**: Specifies the user name to use with SQL Authentication (default is the logged-in user)
+* **Password**: Specifies the password to use for **UserName** (if SQL authentication preferred)
+* **ScriptDirectory**: Specifies the root directory in which the extracted files are to be stored (default is .\MyScriptsDirectory)
 * **IncludeDatabases**: Specifies databases that match the listed pattern(s) be included in the extraction (default is all)
 * **ExcludeDatabases**: Specifies databases that match the listed pattern(s) be excluded from the extraction (default is none)
-* **ScriptDirectory**: Specifies the root directory in which the extracted files are to be stored (default is C:\MyScriptsDirectory)
-* **INPUTS**: None.  You cannot pipe objects to extract-sql-server-ddl.ps1.
-* **OUTPUTS**: System.String.
+* **IncludeSchemas**: Specifies schemas (in any database) that match the listed pattern(s) be included in the extraction (default is all)
+* **ExcludeSchemas**: Specifies schemas (in any database) that match the listed pattern(s) be excluded from the extraction (default is none)
+* **IncludeSystemDatabases**: Specifies whether to include databases, schemas, and tables tagged as SQL Server system objects (default is false)
+* **ExistingDirectoryAction**: Specifies whether to delete or keep the existing **ScriptDirectory** (default is to prompt interactively)
+* **NoSysAdminAction**: Specifies whether to stop or continue should the authenticated **UserName** not have the sysadmin role on **ServerName**\\**InstanceName** (default is to prompt interactively)
 
-> **_NOTE:_**  For named instances, use  hostname\InstanceName
+## Additional Help
 
-Here some examples of how use the script:
-
-Example 1:
-
+For more information on using the script, execute the following:
 ```ps
-PS> .\extract-sql-server-ddl.ps1
+PS> Get-Help -full .\extract-sql-server-ddl.ps1
 ```
-
-Example 2:
-
-```ps
-PS> .\extract-sql-server-ddl.ps1 -ServerName foo.mydomain.com -Port 1500
-```
-
-Example 2:
-
-```ps
-PS> .\extract-sql-server-ddl.ps1 -SqlAuthentication -ServerName foo.database.windows.net
-```
-
-
 
 ## Reporting issues and feedback
 
