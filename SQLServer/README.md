@@ -4,8 +4,8 @@ This repository provides some simple scripts to help exporting your SQLServer co
 
 ## Version
 
-Version 2.6
-Release 2022-07-26
+Version 2.8
+Release 2022-09-01
 
 ## Usage
 
@@ -38,8 +38,9 @@ PS> Get-Help -full .\extract-sql-server-ddl.ps1
 
 ## Reporting issues and feedback
 
-If you encounter any bugs with the tool please file an issue in the [Issues](https://github.com/MobilizeNet/SnowConvertDDLExportScripts/issues) section of our GitHub repo.
+If you encounter any bugs with the tool please file an issue in the
+[Issues](https://github.com/MobilizeNet/SnowConvertDDLExportScripts/issues) section of our GitHub repo.
 
 ## License
 
-These export scripts are licensed under the [MIT license](https://github.com/MobilizeNet/SnowConvertDDLExportScripts/blob/main/Oracle/LICENSE.txt).
+These scripts are licensed under the [MIT license](https://github.com/MobilizeNet/SnowConvertDDLExportScripts/blob/main/SQLServer/LICENSE.txt).
